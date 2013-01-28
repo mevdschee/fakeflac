@@ -1,0 +1,25 @@
+#!/bin/bash
+#
+# Installation instuctions:
+#   sudo apt-get install sndfile-programs python-scipy
+#   sudo apt-get install python-matplotlib (debugging only)
+#
+# Comments:
+#    maurits@vdschee.nl
+#
+CONVERT=`which sndfile-convert`
+if [ $? -eq 1 ]; then
+  echo "Cannot find 'sndfile-convert' executable, is 'sndfile-programs' installed?"
+  exit -1
+fi
+if [ $# -eq 0 ]; then
+  echo "usage: $0 audio_file.flac"
+  exit 0
+fi
+$CONVERT "$1" "/tmp/fakeflac_$$.wav"
+if [ -f "/tmp/fakeflac_$$.wav" ]; then
+  python fakeflac.py "/tmp/fakeflac_$$.wav"
+  RESULT=$?
+  rm "/tmp/fakeflac_$$.wav"
+fi
+exit $RESULT
