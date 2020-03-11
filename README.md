@@ -7,7 +7,7 @@ see: http://www.maurits.vdschee.nl/fakeflac/
 
 # Requirements
 
-- Python 2.7
+- Python 3
 - Python SciPy and NumPy
 - libsndfile and it's programs
 
