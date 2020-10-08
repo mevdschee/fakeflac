@@ -16,10 +16,14 @@ if [ $# -eq 0 ]; then
   echo "usage: $0 audio_file.flac"
   exit 0
 fi
-$CONVERT "$1" "/tmp/fakeflac_$$.wav"
-if [ -f "/tmp/fakeflac_$$.wav" ]; then
-  python "$(dirname $BASH_SOURCE)/fakeflac.py" "/tmp/fakeflac_$$.wav"
-  RESULT=$?
-  rm "/tmp/fakeflac_$$.wav"
-fi
+for CURR_FILE in "$@"
+do
+    $CONVERT "$CURR_FILE" "/tmp/fakeflac_$$.wav"
+    if [ -f "/tmp/fakeflac_$$.wav" ]; then
+      echo -n "$0: $CURR_FILE: "
+      python "$(dirname $BASH_SOURCE)/fakeflac.py" "/tmp/fakeflac_$$.wav"
+      RESULT=$?
+      rm "/tmp/fakeflac_$$.wav"
+    fi
+done
 exit $RESULT
