@@ -18,7 +18,7 @@ if [ $# -eq 0 ]; then
 fi
 $CONVERT "$1" "/tmp/fakeflac_$$.wav"
 if [ -f "/tmp/fakeflac_$$.wav" ]; then
-  python fakeflac.py "/tmp/fakeflac_$$.wav"
+  python "$(dirname $BASH_SOURCE)/fakeflac.py" "/tmp/fakeflac_$$.wav"
   RESULT=$?
   rm "/tmp/fakeflac_$$.wav"
 fi
