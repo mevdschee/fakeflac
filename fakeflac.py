@@ -73,7 +73,12 @@ spectrum = moving_average(spectrum, freq / 100)
 # find cutoff in frequency spectrum
 cutoff = find_cutoff(spectrum, freq / 50, 1.25, 1.1)
 # print percentage of frequency spectrum before cutoff
-print(int((cutoff * 100) / freq))
+out = (int((cutoff * 100) / freq))
+print(out)
+if out == 100:
+  sys.exit(0)
+else:
+  sys.exit(1)
 
 # debugging only:
 if 'plt' in globals():
