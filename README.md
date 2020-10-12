@@ -9,13 +9,13 @@ see: http://www.maurits.vdschee.nl/fakeflac/
 
 - Python 3
 - Python SciPy and NumPy
-- libsndfile and it's programs
+- ffmpeg
 
 # Installation
 
 On Linux (Debian based) you must install the following dependencies:
 
-    sudo apt-get install sndfile-programs python-scipy
+    sudo apt-get install ffmpeg python-scipy
 
 For debugging (to draw the graphs) you need:
 
