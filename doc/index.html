@@ -26,7 +26,7 @@ There are lossless codecs (encoder-decoders), like FLAC, that allow encoding and
 
 <h2>2 How it works</h2>
 
-<p>The FLAC audio file is decoded into 16 bit samples, with 44100 samples per second (PCM16), also known as WAV file, using libsndfile <a href="http://www.mega-nerd.com/libsndfile/tools/">[3]</a>. From these samples only the first 30 seconds are analyzed. For every second the frequency spectrum of the samples is computed by applying a Hanning Window and doing a Fast Fourier Transform. These spectrums are added, so that eventually you end up with 30 stacked spectrums. These is divided by 30 to get the average spectrum. Then the spectrum is normalized using log10. After that we applied a rolling average on the spectrum with a window size of 1/100th of the frequency, being 44100/100=441 samples. This produces a clean line as can be seen in the following images:</p>
+<p>The FLAC audio file is decoded into 16 bit samples, with 44100 samples per second (PCM16), also known as WAV file, using libsndfile <a href="https://ffmpeg.org/">[3]</a>. From these samples only the first 30 seconds are analyzed. For every second the frequency spectrum of the samples is computed by applying a Hanning Window and doing a Fast Fourier Transform. These spectrums are added, so that eventually you end up with 30 stacked spectrums. These is divided by 30 to get the average spectrum. Then the spectrum is normalized using log10. After that we applied a rolling average on the spectrum with a window size of 1/100th of the frequency, being 44100/100=441 samples. This produces a clean line as can be seen in the following images:</p>
 
 <p style="text-align:center;"><img src="fake.png"/><br/><strong>Picture 1</strong>: FLAC file with missing high frequencies</p>
 <p style="text-align:center;"><img src="real.png"/><br/><strong>Picture 2</strong>: FLAC file with intact high frequencies</p>
@@ -59,8 +59,8 @@ sudo apt-get install python-matplotlib
     http://jthz.com/mp3/</a></li>
   <li><a href="http://en.wikipedia.org/wiki/Red_Book_%28CD_standard%29">Wikipedia | Red Book (CD standard)<br/>
     http://en.wikipedia.org/wiki/Red_Book_%28CD_standard%29</a></li>
-  <li><a href="http://www.mega-nerd.com/libsndfile/tools/">Sndfile-tools: a small collection of programs that use libsndfile<br/>
-    http://www.mega-nerd.com/libsndfile/tools/</a></li>
+  <li><a href="https://ffmpeg.org/">FFmpeg: A complete, cross-platform solution to record, convert and stream audio and video.<br/>
+    https://ffmpeg.org/</a></li>
   <li><a href="http://spectro.enpts.com/">Spectro: a freeware audio file analyzer for windows<br/>
     http://spectro.enpts.com/</a></li>
   <li><a href="http://www.neillcorlett.com/informer/">Informer | Detect lossy audio!<br/>
