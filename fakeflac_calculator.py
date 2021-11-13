@@ -11,11 +11,6 @@ from scipy.signal import hann
 import warnings
 import subprocess
 
-def ExecuteBashCommand(bashCommand):
-    process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    output, error = process.communicate()
-    return output.decode("utf-8").strip('\n')
-
 def MovingAverage(a, w):
     # calculate moving average
     window = numpy.ones(int(w)) / float(w)
@@ -89,7 +84,7 @@ def CalculateFakeFlacValue(fileToProcess):
     cutOff = FindCutoff(spectrum, freq / 50, 1.25, 1.1)
     # print percentage of frequency spectrum before cutoff
     fakeFlacValue = (int((cutOff * 100) / freq))
-    print(f'{fakeFlacValue:03d}' + ' ' + fileToProcess)
+    print('=> ' + f'{fakeFlacValue:03d}' + ' ' + fileToProcess)
     return fakeFlacValue
 
 '''

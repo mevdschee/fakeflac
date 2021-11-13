@@ -35,7 +35,7 @@ for dir, dirNames, fileNames in os.walk(source_tree):
     dirNames.sort()
 
     if scanMode:
-#        print(dir)
+        print(dir)
         for fileName in sorted(fileNames):
             fullFileName = os.path.join(dir, fileName)
             if fnmatch(fullFileName, "*.flac"):   

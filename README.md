@@ -2,17 +2,13 @@ FakeFLAC
 ========
 
 A command-line tool to detect "fake" FLAC files
-
-see: http://www.maurits.vdschee.nl/fakeflac/
+Derived from 
 
 # Requirements
 
 - Python 3
 - Python SciPy and NumPy
 - ffmpeg
-
-sudo apt-get install ffmpeg python-scipy
-sudo apt-get install python-matplotlib # (debugging only)
 
 # Installation
 
