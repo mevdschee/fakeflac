@@ -30,20 +30,20 @@ def find_cutoff(a, dx, diff, limit):
             return a.shape[0] - i - dx
     return a.shape[0]
 
-def CalculateFakeFlacValue():
+def CalculateFakeFlacValue(fileToProcess):
     # print usage if no argument given
-    if len(sys.argv[1:]) < 1:
-      print('usage %s audio_file.wav' % (sys.argv[0]))
-      sys.exit(1)
+    print(fileToProcess)
+    if fileToProcess == '':
+        return -1
 
     # read audio samples and ignore warnings, print errors
     try:
-      with warnings.catch_warnings():
-        warnings.simplefilter('ignore')
-        input_data = read(sys.argv[1])
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            input_data = fileToProcess
     except IOError as e:
-      print(e[1])
-      sys.exit(e[0])
+        print(e[1])
+        return -1
 
     # process data
     freq = input_data[0]
@@ -56,11 +56,11 @@ def CalculateFakeFlacValue():
 
     # run over the seconds (max 30)
     for t in range(0, seconds - 1):
-      # apply hanning window
-      window = hann(freq)
-      audio_second = audio[t * freq:(t + 1) * freq, channel] * window
-      # do fft to add second to frequency spectrum
-      spectrum += abs(rfft(audio_second))
+        # apply hanning window
+        window = hann(freq)
+        audio_second = audio[t * freq:(t + 1) * freq, channel] * window
+        # do fft to add second to frequency spectrum
+        spectrum += abs(rfft(audio_second))
 
     # calculate average of the spectrum
     spectrum /= seconds
