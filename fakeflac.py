@@ -38,7 +38,7 @@ for dir, dirNames, fileNames in os.walk(source_tree):
         print(dir)
         for fileName in sorted(fileNames):
             fullFileName = os.path.join(dir, fileName)
-            if fnmatch(fullFileName, "*.wav"):   
+            if fnmatch(fullFileName, "*.flac"):   
 #                fakeFlacFileFound = False         
 #                for fileName in sorted(fileNames):
 #                    fullFileName = os.path.join(dir, fileName)

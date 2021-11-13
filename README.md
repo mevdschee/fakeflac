@@ -11,6 +11,9 @@ see: http://www.maurits.vdschee.nl/fakeflac/
 - Python SciPy and NumPy
 - ffmpeg
 
+sudo apt-get install ffmpeg python-scipy
+sudo apt-get install python-matplotlib # (debugging only)
+
 # Installation
 
 On Linux (Debian based) you must install the following dependencies:

@@ -1,16 +1,22 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
-# uncomment for debugging:
+import os
+from os import error
 import matplotlib.pyplot as plt
 import numpy
 from scipy.fftpack import rfft
 from scipy.io.wavfile import read
 from scipy.signal import hann
-import sys
+#import sys
 import warnings
+import subprocess
 
-def moving_average(a, w):
+def ExecuteBashCommand(bashCommand):
+    process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = process.communicate()
+    return output.decode("utf-8").strip('\n')
+
+def MovingAverage(a, w):
     # calculate moving average
     window = numpy.ones(int(w)) / float(w)
     r = numpy.convolve(a, window, 'valid')
@@ -22,7 +28,7 @@ def moving_average(a, w):
     # add nan arrays to equal input and output length
     return numpy.concatenate((a, r, b))
 
-def find_cutoff(a, dx, diff, limit):
+def FindCutoff(a, dx, diff, limit):
     for i in range(1, int(a.shape[0] - dx)):
         if a[-i] / a[-1] > limit:
             break
@@ -31,16 +37,25 @@ def find_cutoff(a, dx, diff, limit):
     return a.shape[0]
 
 def CalculateFakeFlacValue(fileToProcess):
-    # print usage if no argument given
-    print(fileToProcess)
     if fileToProcess == '':
         return -1
+
+    outputFile = os.path.splitext(fileToProcess)[0] + '.wav' 
+    if os.path.isfile(outputFile):                              
+        os.remove(outputFile)
+
+    try:
+        process = subprocess.Popen(['ffmpeg', '-i', fileToProcess, outputFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output = process.communicate()
+    except error as e:
+        print(e[1])      
+        return -1     
 
     # read audio samples and ignore warnings, print errors
     try:
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
-            input_data = fileToProcess
+            input_data = read(outputFile)
     except IOError as e:
         print(e[1])
         return -1
@@ -67,9 +82,9 @@ def CalculateFakeFlacValue(fileToProcess):
     # normalize frequency spectrum
     spectrum = numpy.lib.scimath.log10(spectrum)
     # smoothen frequency spectrum with window w
-    spectrum = moving_average(spectrum, freq / 100)
+    spectrum = MovingAverage(spectrum, freq / 100)
     # find cutoff in frequency spectrum
-    cutoff = find_cutoff(spectrum, freq / 50, 1.25, 1.1)
+    cutoff = FindCutoff(spectrum, freq / 50, 1.25, 1.1)
     # print percentage of frequency spectrum before cutoff
     out = (int((cutoff * 100) / freq))
     print(out)
