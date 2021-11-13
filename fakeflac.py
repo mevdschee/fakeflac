@@ -1,93 +1,63 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
-# uncomment for debugging:
-#import matplotlib.pyplot as plt
-import numpy
-from scipy.fftpack import rfft
-from scipy.io.wavfile import read
-from scipy.signal import hann
-import sys
-import warnings
+import os
+from fnmatch import fnmatch
+from fakeflac_calculator import CalculateFakeFlacValue
 
+fakeFlacFile = 'fakeflac.txt'
 
-def moving_average(a, w):
-  # calculate moving average
-  window = numpy.ones(int(w)) / float(w)
-  r = numpy.convolve(a, window, 'valid')
-  # len(a) = len(r) + w
-  a = numpy.empty((int(w / 2)))
-  a.fill(numpy.nan)
-  b = numpy.empty((int(w - len(a))))
-  b.fill(numpy.nan)
-  # add nan arrays to equal input and output length
-  return numpy.concatenate((a, r, b))
+def sanitizeFileName(fileName):
+    # Check if the last character is a trailing / or \
+    if (fileName[-1:] in ['/', '\\']):
+        fileName = fileName[:-1]  # Strip the last character
+    return fileName
 
+# Body 
+import argparse
+parser = argparse.ArgumentParser(description='Measure value for fakeflac')
 
-def find_cutoff(a, dx, diff, limit):
-  for i in range(1, int(a.shape[0] - dx)):
-    if a[-i] / a[-1] > limit:
-      break
-    if a[int(-i - dx)] - a[-i] > diff:
-      return a.shape[0] - i - dx
-  return a.shape[0]
+parser.add_argument('sourcefolder', metavar='sourcefolder', type=str, help='root-folder containing music files (flac)')
+parser.add_argument('-s', '--scan', help="scan for missing " + fakeFlacFile + " files and generate when needed (default)", action="store_true")
+parser.add_argument('-r', '--report', help="report for all " + fakeFlacFile + " files", action="store_true")   
 
+args = parser.parse_args()
 
-# print usage if no argument given
-if len(sys.argv[1:]) < 1:
-  print('usage %s audio_file.wav' % (sys.argv[0]))
-  sys.exit(1)
+source_tree = sanitizeFileName(args.sourcefolder)
+scanMode = args.scan
+reportMode = args.report
 
-# read audio samples and ignore warnings, print errors
-try:
-  with warnings.catch_warnings():
-    warnings.simplefilter('ignore')
-    input_data = read(sys.argv[1])
-except IOError as e:
-  print(e[1])
-  sys.exit(e[0])
+if not scanMode and not reportMode:
+    scanMode = True
+if scanMode and reportMode:
+    reportMode = False
 
-# process data
-freq = input_data[0]
-audio = input_data[1]
-channel = 0
-samples = len(audio[:, 0])
-seconds = int(samples / freq)
-seconds = min(seconds, 30)
-spectrum = [0] * freq
+for dir, dirNames, fileNames in os.walk(source_tree):
+    dirNames.sort()
 
-# run over the seconds (max 30)
-for t in range(0, seconds - 1):
-  # apply hanning window
-  window = hann(freq)
-  audio_second = audio[t * freq:(t + 1) * freq, channel] * window
-  # do fft to add second to frequency spectrum
-  spectrum += abs(rfft(audio_second))
+    if scanMode:
+        print(dir)
+        for fileName in sorted(fileNames):
+            fullFileName = os.path.join(dir, fileName)
+            if fnmatch(fullFileName, "*.flac"):   
+                fakeFlacFileFound = False         
+#                for fileName in sorted(fileNames):
+#                    fullFileName = os.path.join(dir, fileName)
+#                    if fnmatch(fullFileName, "*/" + fakeFlacFile):
+#                        fakeFlacFileFound = True
+#                        break
+#                if not fakeFlacFileFound:
+#                    os.system('dr14_tmeter "' + dir + '"')
+                print('Calculate value of [' + fullFileName + ']')
+#                break
 
-# calculate average of the spectrum
-spectrum /= seconds
-# normalize frequency spectrum
-spectrum = numpy.lib.scimath.log10(spectrum)
-# smoothen frequency spectrum with window w
-spectrum = moving_average(spectrum, freq / 100)
-# find cutoff in frequency spectrum
-cutoff = find_cutoff(spectrum, freq / 50, 1.25, 1.1)
-# print percentage of frequency spectrum before cutoff
-out = (int((cutoff * 100) / freq))
-print(out)
-if out == 100:
-  sys.exit(0)
-else:
-  sys.exit(1)
+    if reportMode:
+        for fileName in sorted(fileNames):
+            fullFileName = os.path.join(dir, fileName)
+            if fnmatch(fullFileName, "*/" + fakeFlacFile):
+                valueAsAstring = os.popen('cat "' + dir + '/dr14.txt" | grep "Official DR value:" | cut -c24-27 &> /dev/null').read().strip()
+                if len(valueAsAstring) < 2:
+                    valueAsAstring = '0' + valueAsAstring
+                dirName = dir.replace(source_tree + '/', '')
+                print(valueAsAstring + ' ' + dirName)
+                break        
 
-# debugging only:
-if 'plt' in globals():
-  # plot
-  plt.plot(spectrum)
-  # label the axes
-  plt.ylabel('Magnitude')
-  plt.xlabel('Frequency')
-  # set the title
-  plt.title('Spectrum')
-  plt.axis((0, 45000, 0, 10))
-  plt.show()
