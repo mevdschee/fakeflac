@@ -51,7 +51,6 @@ def CalculateFakeFlacValue(fileToProcess):
         print(e[1])      
         return -1     
 
-    # read audio samples and ignore warnings, print errors
     try:
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
@@ -59,6 +58,9 @@ def CalculateFakeFlacValue(fileToProcess):
     except IOError as e:
         print(e[1])
         return -1
+
+    if os.path.isfile(outputFile):                              
+        os.remove(outputFile)
 
     # process data
     freq = input_data[0]
@@ -84,11 +86,11 @@ def CalculateFakeFlacValue(fileToProcess):
     # smoothen frequency spectrum with window w
     spectrum = MovingAverage(spectrum, freq / 100)
     # find cutoff in frequency spectrum
-    cutoff = FindCutoff(spectrum, freq / 50, 1.25, 1.1)
+    cutOff = FindCutoff(spectrum, freq / 50, 1.25, 1.1)
     # print percentage of frequency spectrum before cutoff
-    out = (int((cutoff * 100) / freq))
-    print(out)
-    return out
+    fakeFlacValue = (int((cutOff * 100) / freq))
+    print(f'{fakeFlacValue:03d}' + ' ' + fileToProcess)
+    return fakeFlacValue
 
 '''
 if out == 100:

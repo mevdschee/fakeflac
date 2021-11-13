@@ -35,7 +35,7 @@ for dir, dirNames, fileNames in os.walk(source_tree):
     dirNames.sort()
 
     if scanMode:
-        print(dir)
+#        print(dir)
         for fileName in sorted(fileNames):
             fullFileName = os.path.join(dir, fileName)
             if fnmatch(fullFileName, "*.flac"):   
@@ -47,7 +47,6 @@ for dir, dirNames, fileNames in os.walk(source_tree):
 #                        break
 #                if not fakeFlacFileFound:
 #                    os.system('dr14_tmeter "' + dir + '"')
-                print('Calculate value of [' + fullFileName + ']')
                 CalculateFakeFlacValue(fullFileName)
 #                break
 
