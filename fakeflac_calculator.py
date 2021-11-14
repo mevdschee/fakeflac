@@ -63,16 +63,19 @@ def CalculateFakeFlacValue(fileToProcess):
     channel = 0
     samples = len(audio[:, 0])
     seconds = int(samples / freq)
-    seconds = min(seconds, 30)
+    # TODO Moved the minimal up to 300 form 30 to better detect fake flacs (= mp3).
+    # Interesting though that removing this entire line (hence defaulting to the
+    # length of the song) does NOT have the same effect
+    seconds = min(seconds, 300)  
     spectrum = [0] * freq
 
     # run over the seconds (max 30)
     for t in range(0, seconds - 1):
         # apply hanning window
         window = hann(freq)
-        audio_second = audio[t * freq:(t + 1) * freq, channel] * window
+        audioSecond = audio[t * freq:(t + 1) * freq, channel] * window
         # do fft to add second to frequency spectrum
-        spectrum += abs(rfft(audio_second))
+        spectrum += abs(rfft(audioSecond))
 
     # calculate average of the spectrum
     spectrum /= seconds
