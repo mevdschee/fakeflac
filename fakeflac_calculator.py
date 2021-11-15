@@ -63,10 +63,10 @@ def CalculateFakeFlacValue(fileToProcess):
     channel = 0
     samples = len(audio[:, 0])
     seconds = int(samples / freq)
-    # TODO Moved the minimal of 'seconds' up to 300 from 30 to better detect fake flacs (= mp3).
+    # TODO Moving the minimal of 'seconds' up to 300 from 30 does better detect fake flacs (= mp3).
     # Interesting though that removing this entire line (hence defaulting to the length of the song) 
     # does NOT have the same effect
-    seconds = min(seconds, 300)  
+    seconds = min(seconds, 30)  
     spectrum = [0] * freq
 
     # run over the seconds (max 30)
@@ -84,7 +84,7 @@ def CalculateFakeFlacValue(fileToProcess):
     # smoothen frequency spectrum with window w
     spectrum = MovingAverage(spectrum, freq / 100)
     # find cutoff in frequency spectrum
-    cutOff = FindCutoff(spectrum, freq / 50, 1.25, 1.1)
+    cutOff = FindCutoff(spectrum, freq / 50, 0.7, 1.1) # org 1.25, 1.1
     # print percentage of frequency spectrum before cutoff
     fakeFlacValue = (int((cutOff * 100) / freq))
     print('=> ' + f'{fakeFlacValue:03d}' + ' ' + fileToProcess)
