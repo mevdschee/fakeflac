@@ -2,7 +2,7 @@ FakeFLAC
 ========
 
 A command-line tool to detect "fake" FLAC files
-* Derived from [mevdschee/fakeflac](https://github.com/mevdschee/fakeflac)
+* Forked from [mevdschee/fakeflac](https://github.com/mevdschee/fakeflac)
 * Explanation about the used algoritm: http://www.maurits.vdschee.nl/fakeflac/
 
 # Requirements
