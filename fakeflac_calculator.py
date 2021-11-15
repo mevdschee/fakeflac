@@ -7,7 +7,6 @@ import numpy
 from scipy.fftpack import rfft
 from scipy.io.wavfile import read
 from scipy.signal import hann
-#import sys
 import warnings
 import subprocess
 
@@ -32,7 +31,7 @@ def FindCutoff(a, dx, diff, limit):
     return a.shape[0]
 
 def CalculateFakeFlacValue(fileToProcess):
-    if fileToProcess == '':
+    if not fileToProcess:
         return -1
 
     outputFile = os.path.splitext(fileToProcess)[0] + '.wav' 
