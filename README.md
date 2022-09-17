@@ -4,7 +4,8 @@ FakeFLAC
 A command-line tool to detect "fake" FLAC files
 
 see: http://www.maurits.vdschee.nl/fakeflac/
-or: https://github.com/mevdschee/fakeflac/blob/master/doc/index.md
+
+also on: https://github.com/mevdschee/fakeflac/blob/master/doc/index.md
 
 # Requirements
 
